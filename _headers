@@ -1,0 +1,8 @@
+# Cabeceras que pone Cloudflare Pages al servir la web.
+#
+# Apple exige que `apple-app-site-association` se sirva como JSON, y por eso la
+# web se mudó de GitHub Pages a Cloudflare Pages el 23 de septiembre: GitHub lo
+# servía como `application/octet-stream` —el fichero no tiene extensión— y no
+# deja cambiar el tipo. Sin esto, el iPhone no guarda la contraseña de la app.
+/.well-known/apple-app-site-association
+  Content-Type: application/json

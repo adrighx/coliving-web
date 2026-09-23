@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CoLiving · Tareas y gastos del piso</title>
+  <meta name="description" content="CoLiving organiza las tareas y los gastos de un piso compartido: un cuadrante que reparte los turnos y unas cuentas que se explican gasto a gasto.">
+  <link rel="icon" href="favicon.png">
+  <link rel="icon" href="favicon-oscuro.png" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <main class="pagina">
+    <a class="cabecera" href="./">
+      <picture>
+        <source srcset="icono-oscuro.png" media="(prefers-color-scheme: dark)">
+        <img src="icono.png" alt="">
+      </picture>
+      <span class="marca">CoLiving</span>
+    </a>
+
+    <h1>Tareas y gastos del piso, sin discusiones.</h1>
+    <p class="entradilla">
+      Una app para pisos compartidos: quién friega hoy, quién ha pagado la compra y cuánto
+      le debes a cada uno, en el mismo sitio.
+    </p>
+
+    <div class="pared">
+      <section class="pieza">
+        <h2>El cuadrante</h2>
+        <p>Los turnos se reparten y rotan solos. Cada uno marca los suyos, y el calendario dice qué toca hoy y a quién.</p>
+      </section>
+      <section class="pieza">
+        <h2>Los gastos</h2>
+        <p>Con foto del ticket y repartidos al céntimo, a partes iguales o a medida.</p>
+      </section>
+      <section class="pieza">
+        <h2>Las cuentas</h2>
+        <p>Qué debes a cada compañero, explicado gasto a gasto. Los pagos los confirman las dos partes.</p>
+      </section>
+    </div>
+
+    <!--
+      Los dos botones de descarga. Mientras la app no esté publicada, cada uno es
+      un <span> con «Próximamente», no un enlace: un botón que lleva a una ficha
+      que no existe es peor que no tenerlo.
+
+      El día que salga en una tienda, ese botón pasa a ser un <a> con su enlace y
+      se le quita la clase `tienda--pronto`:
+        App Store:   https://apps.apple.com/es/app/id6813604250
+        Google Play: https://play.google.com/store/apps/details?id=com.coliving.compartido
+      Y conviene cambiarlos entonces por las insignias oficiales de Apple y de
+      Google, que son las que exigen sus normas de marca para enlazar a la tienda.
+    -->
+    <div class="tiendas">
+      <span class="tienda tienda--pronto">
+        <span class="tienda-arriba">Próximamente en la</span>
+        <span class="tienda-nombre">App Store</span>
+      </span>
+      <span class="tienda tienda--pronto">
+        <span class="tienda-arriba">Próximamente en</span>
+        <span class="tienda-nombre">Google Play</span>
+      </span>
+    </div>
+
+    <!-- Esta página hace también de URL de soporte en App Store Connect. -->
+    <section class="pieza ayuda">
+      <h2>Ayuda</h2>
+      <p>¿Algo no funciona o tienes una duda? Escribe a
+        <a href="mailto:soporte@appcoliving.com">soporte@appcoliving.com</a>.</p>
+    </section>
+
+    <footer class="pie">
+      <a href="privacidad.html">Privacidad</a>
+      <a href="condiciones.html">Condiciones de uso</a>
+    </footer>
+  </main>
+</body>
+</html>
