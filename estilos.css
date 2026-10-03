@@ -1,0 +1,251 @@
+/*
+ * La web de CoLiving: inicio, privacidad y condiciones.
+ *
+ * Misma dirección que la app —Azulejo—: la junta de fondo, la pieza sin borde
+ * encima, cobalto de color. Los valores salen de `src/theme/index.ts`.
+ *
+ * Bricolage se sirve desde aquí y no desde Google Fonts: pedirla a Google le
+ * pasaría la IP de cada visitante, y en una página de privacidad eso queda
+ * especialmente mal. Licencia OFL en `fuentes/OFL.txt`.
+ */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('fuentes/BricolageGrotesque_700Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  /*
+   * Los mismos tokens que `src/theme/index.ts`, dirección «Cal y ámbar»
+   * (17 de septiembre). Los nombres se quedan como estaban —`cobalto` ahora es
+   * ámbar— para no tocar las tres páginas: renombrarlos aquí no cambia nada de
+   * lo que se ve y sí arriesga dejarse una regla sin cambiar.
+   */
+  --junta: #f2eee7;
+  --pieza: #fffdf9;
+  --pieza-alt: #f6f2e9;
+  --tinta: #1c1a17;
+  --tinta-suave: #6f6a60;
+  --cobalto: #7a5c05;
+  --cobalto-suave: #f7e9c4;
+  --sobre-cobalto: #fffdf9;
+  --ceja: none;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --junta: #0e0e11;
+    --pieza: #17171c;
+    --pieza-alt: #23232b;
+    --tinta: #f2f0ec;
+    --tinta-suave: #8b8892;
+    --cobalto: #e9b949;
+    --cobalto-suave: #2a2416;
+    --sobre-cobalto: #14140f;
+    --ceja: none;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--junta);
+  color: var(--tinta);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto,
+    'Helvetica Neue', sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+.pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 20px 64px;
+}
+
+h1,
+h2,
+.marca {
+  font-family: 'Bricolage Grotesque', 'Helvetica Neue', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(30px, 6vw, 44px);
+  letter-spacing: -0.8px;
+  margin: 0 0 8px;
+}
+
+h2 {
+  font-size: 21px;
+  letter-spacing: -0.4px;
+  margin: 0 0 8px;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--cobalto);
+  font-weight: 600;
+  /* El correo de soporte es largo: en un móvil estrecho tiene que poder partirse. */
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------- Cabecera */
+.cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cabecera picture {
+  display: flex;
+}
+
+.cabecera img {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+}
+
+.marca {
+  font-size: 22px;
+  letter-spacing: -0.4px;
+  color: var(--tinta);
+}
+
+.entradilla {
+  font-size: 19px;
+  color: var(--tinta-suave);
+  margin: 0 0 32px;
+}
+
+/* --------------------------------------------------------------- Piezas */
+/* La junta hace de borde: ninguna pieza lleva borde ni sombra. */
+.pieza {
+  background: var(--pieza);
+  background-image: var(--ceja);
+  border-radius: 10px;
+  padding: 20px 22px;
+}
+
+.pared {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  margin-bottom: 32px;
+}
+
+.pared .pieza p {
+  margin: 0;
+  color: var(--tinta-suave);
+}
+
+.pastilla {
+  display: inline-block;
+  background: var(--cobalto-suave);
+  color: var(--cobalto);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ------------------------------------------------------------ Tiendas */
+/*
+ * Los botones de descarga, en tinta como las insignias de las tiendas: se
+ * reconocen como «descargar» sin tener que leerlos. En oscuro la tinta es clara
+ * y el botón sale claro sobre carbón, que es justo lo que hacen las insignias.
+ */
+.tiendas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tienda {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 170px;
+  min-height: 52px;
+  padding: 8px 18px;
+  border-radius: 10px;
+  background: var(--tinta);
+  color: var(--junta);
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+a.tienda:hover {
+  opacity: 0.85;
+}
+
+.tienda-arriba {
+  font-size: 12px;
+}
+
+.tienda-nombre {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+/* Aún no publicada: se ve, pero apagada, y no se puede pulsar. */
+.tienda--pronto {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------- Documentos */
+.documento .pieza + .pieza {
+  margin-top: 3px;
+}
+
+.documento .pieza > :last-child {
+  margin-bottom: 0;
+}
+
+.documento ul {
+  padding-left: 20px;
+}
+
+.documento li + li {
+  margin-top: 4px;
+}
+
+.fecha {
+  color: var(--tinta-suave);
+  margin: 0 0 24px;
+}
+
+.ayuda {
+  margin-top: 32px;
+}
+
+.ayuda p {
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------- Pie */
+.pie {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  font-size: 14px;
+  color: var(--tinta-suave);
+}
