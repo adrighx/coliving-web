@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CoLiving · Tareas y gastos del piso</title>
+  <meta name="description" content="CoLiving organiza las tareas y los gastos de un piso compartido: un cuadrante que reparte los turnos y unas cuentas que se explican gasto a gasto, al céntimo.">
+  <meta name="theme-color" content="#f2eee7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e0e11" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="CoLiving · Tareas y gastos del piso">
+  <meta property="og:description" content="Las tareas y los gastos del piso compartido, claros para todos. Gratis y sin anuncios.">
+  <meta property="og:image" content="https://appcoliving.com/icono.png">
+  <meta property="og:url" content="https://appcoliving.com/">
+  <meta property="og:locale" content="es_ES">
+  <link rel="icon" href="favicon.png">
+  <link rel="icon" href="favicon-oscuro.png" media="(prefers-color-scheme: dark)">
+  <link rel="preload" href="fuentes/SpaceGrotesk_700Bold.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <header class="marco barra">
+    <a class="cabecera" href="./">
+      <picture>
+        <source srcset="icono-oscuro.png" media="(prefers-color-scheme: dark)">
+        <img src="icono.png" alt="">
+      </picture>
+      <span class="marca">CoLiving</span>
+    </a>
+    <nav aria-label="Secciones">
+      <a class="solo-ancho" href="#como">Cómo funciona</a>
+      <a href="#apoyar">Apoyar</a>
+      <a href="#ayuda">Ayuda</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="marco heroe">
+      <div>
+        <h1>Las tareas y los gastos del piso, claros para todos.</h1>
+        <p class="entradilla">
+          CoLiving es una app para pisos compartidos. Reparte las tareas en un cuadrante que
+          rota solo y lleva las cuentas de la casa al céntimo, con la foto del ticket.
+          Gratis y sin anuncios.
+        </p>
+
+        <!--
+          Los dos botones de descarga. Mientras la app no esté publicada en una tienda,
+          su botón es un <span> con «Próximamente», no un enlace: un botón que lleva a
+          una ficha que no existe es peor que no tenerlo.
+
+          App Store: publicada desde el 17 de octubre de 2026, con su insignia oficial
+          (Apple Marketing Tools, «Consíguelo en el App Store», es-es): la negra en claro
+          y la blanca en oscuro. Están copiadas en `web/` y no enlazadas a Apple, para
+          que la página no le pase a nadie los datos de quien la visita. No se retocan:
+          las normas de Apple no dejan cambiarles nada.
+          Google Play, el día que salga, igual: su insignia oficial, enlazada a
+            https://play.google.com/store/apps/details?id=com.coliving.compartido
+        -->
+        <div class="tiendas">
+          <a class="insignia" href="https://apps.apple.com/es/app/coliving-piso-compartido/id6813604250">
+            <picture>
+              <source srcset="app-store-oscuro.svg" media="(prefers-color-scheme: dark)">
+              <img src="app-store.svg" alt="Consíguelo en el App Store" width="168" height="56">
+            </picture>
+          </a>
+          <span class="tienda tienda--pronto">
+            <span class="tienda-arriba">Próximamente en</span>
+            <span class="tienda-nombre">Google Play</span>
+          </span>
+        </div>
+      </div>
+
+      <!--
+        El repartidor: lo que se recuerda de la página. Hace la misma cuenta que
+        `splitCents` (src/lib/money.ts) con pesos iguales: todo en céntimos
+        enteros, y los céntimos que sobran van, de uno en uno, a los primeros de
+        la lista. Si cambia la regla en la app, cambia aquí.
+      -->
+      <section class="repartidor" aria-labelledby="repartidor-titulo">
+        <p class="repartidor-titulo" id="repartidor-titulo">Prueba a repartir un gasto</p>
+        <label class="importe">
+          <span class="oculto">Importe del gasto, en euros</span>
+          <input id="importe" type="text" inputmode="decimal" autocomplete="off"
+                 value="47,83" maxlength="10" spellcheck="false">
+          <span aria-hidden="true">€</span>
+        </label>
+
+        <p class="entre" id="entre">Entre</p>
+        <div class="gente" role="group" aria-labelledby="entre" id="gente">
+          <button type="button" class="persona" aria-pressed="true" data-nombre="Marta"><span class="avatar av-1" aria-hidden="true">M</span>Marta</button>
+          <button type="button" class="persona" aria-pressed="true" data-nombre="Pedro"><span class="avatar av-2" aria-hidden="true">P</span>Pedro</button>
+          <button type="button" class="persona" aria-pressed="true" data-nombre="Pablo"><span class="avatar av-3" aria-hidden="true">P</span>Pablo</button>
+          <button type="button" class="persona" aria-pressed="false" data-nombre="Lucía"><span class="avatar av-4" aria-hidden="true">L</span>Lucía</button>
+          <button type="button" class="persona" aria-pressed="false" data-nombre="Adrian"><span class="avatar av-5" aria-hidden="true">A</span>Adrian</button>
+        </div>
+
+        <ul class="partes" id="partes" aria-label="Lo que pone cada uno"></ul>
+        <p class="explicacion" id="explicacion" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <section class="marco seccion" id="como" aria-labelledby="como-titulo">
+      <h2 id="como-titulo">Lo que pasa en un piso, apuntado.</h2>
+      <p class="seccion-intro">
+        Las tareas, los gastos y quién le debe qué a quién. Así se ve en la app.
+      </p>
+
+      <!--
+        Cuatro rasgos, cada uno con su escena: un trozo de una pantalla real de
+        la app, a su tamaño, sobre un fondo un grado más hondo que la página. Las
+        cuatro escenas miden lo mismo y el texto va debajo, suelto sobre la
+        página: con la escena dentro de una ficha y las filas dentro de la
+        escena eran tres cajas una dentro de otra, y se leía como un catálogo.
+      -->
+      <div class="rasgos">
+        <article class="rasgo">
+          <div class="escena" aria-hidden="true">
+            <div class="escena-app">
+              <div class="mini">
+                <div class="semana">
+                  <div class="dia"><small>L</small><b>12</b><i class="punto-hecho"></i></div>
+                  <div class="dia"><small>M</small><b>13</b><i class="punto-pasado"></i></div>
+                  <div class="dia dia--hoy"><small>X</small><b>14</b><i class="punto-toca"></i></div>
+                  <div class="dia"><small>J</small><b>15</b><i class="punto-toca"></i></div>
+                  <div class="dia"><small>V</small><b>16</b><i class="punto-toca"></i></div>
+                  <div class="dia"><small>S</small><b>17</b><i></i></div>
+                  <div class="dia"><small>D</small><b>18</b><i class="punto-toca"></i></div>
+                </div>
+              </div>
+              <div class="mini fila">
+                <span class="circulo"></span>
+                <span class="fila-texto">Sacar la basura<small>Te toca a ti</small></span>
+              </div>
+              <div class="mini fila">
+                <span class="avatar av-2">P</span>
+                <span class="fila-texto">Fregar los platos<small>Le toca a Pedro</small></span>
+              </div>
+            </div>
+          </div>
+          <h3>Los turnos rotan solos</h3>
+          <p>Apuntas las tareas y cada cuánto tocan, y el cuadrante las reparte entre todos y las
+            va rotando. Cada uno marca las suyas, y lo que se queda sin hacer se ve.</p>
+        </article>
+
+        <article class="rasgo">
+          <div class="escena" aria-hidden="true">
+            <div class="escena-app">
+              <div class="mini">
+                <span class="rotulo">Te deben</span>
+                <span class="cifra verde">24,50 €</span>
+                <span class="detalle">Marta 16,16 € · Pedro 8,34 €</span>
+              </div>
+              <div class="mini fila">
+                <span class="avatar av-1">M</span>
+                <span class="fila-texto">Compra de la semana<small>Pagó Marta · entre 3</small></span>
+                <span class="fila-importe">47,83 €</span>
+              </div>
+            </div>
+          </div>
+          <h3>Lo que te deben, y de quién</h3>
+          <p>Cada cifra se explica gasto a gasto. Nada de fiarse de un número que no sabes de dónde
+            sale.</p>
+        </article>
+
+        <article class="rasgo">
+          <div class="escena" aria-hidden="true">
+            <div class="escena-app">
+              <div class="mini fila">
+                <span class="avatar av-2">P</span>
+                <span class="fila-texto">Pedro dice que te ha pagado 8,34 €
+                  <span class="pastilla-espera">Espera tu confirmación</span></span>
+              </div>
+              <div class="mini fila">
+                <span class="fila-texto">¿Te ha llegado?</span>
+                <span class="mini-boton">Confirmar</span>
+              </div>
+            </div>
+          </div>
+          <h3>Un pago cuenta cuando lo confirman los dos</h3>
+          <p>Quien paga lo apunta y quien cobra dice que le ha llegado. Hasta entonces, la deuda
+            sigue en su sitio.</p>
+        </article>
+
+        <article class="rasgo">
+          <div class="escena" aria-hidden="true">
+            <div class="escena-app">
+              <div class="mini fila">
+                <span class="fila-texto">Mi parte del alquiler<small>El día 1 · solo lo ves tú</small></span>
+                <span class="fila-importe">450,00 €</span>
+              </div>
+              <div class="mini fila">
+                <span class="fila-texto">Octubre</span>
+                <span class="mini-boton mini-boton--suave">Ya lo he pagado</span>
+              </div>
+            </div>
+          </div>
+          <h3>Lo que pagas por tu cuenta, aparte</h3>
+          <p>Si cada uno le paga el alquiler al casero por su lado, la app te lo recuerda el día que
+            toca. No entra en las cuentas del piso y no lo ve nadie más.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="marco seccion" aria-labelledby="empezar-titulo">
+      <h2 id="empezar-titulo">Para empezar</h2>
+      <p class="seccion-intro">Lo hace una persona del piso y los demás entran después.</p>
+      <ol class="pasos">
+        <li>
+          <h3>Crea el piso</h3>
+          <p>Ponle nombre y apunta las tareas de la casa y cada cuánto tocan.</p>
+        </li>
+        <li>
+          <h3>Pasa el código</h3>
+          <p>Cada piso tiene un código de invitación. Tus compañeros lo escriben y ya están
+            dentro.</p>
+        </li>
+        <li>
+          <h3>Apuntad lo que pase</h3>
+          <p>Cada gasto con su ticket y cada turno con su marca. Las cuentas se hacen solas.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="marco seccion" aria-labelledby="claro-titulo">
+      <h2 id="claro-titulo">Sin letra pequeña</h2>
+      <ul class="promesas">
+        <li><strong>Gratis y sin anuncios</strong>
+          <span>No hay versión de pago ni nada que desbloquear.</span></li>
+        <li><strong>Sin seguimiento</strong>
+          <span>No hay analítica ni publicidad, y tus datos no se venden ni se ceden.</span></li>
+        <li><strong>Tus datos, en Europa</strong>
+          <span>Los servidores están en Irlanda. Lo que apuntas en un piso solo lo ve ese piso.</span></li>
+        <li><strong>Te vas cuando quieras</strong>
+          <span>Borras tu cuenta desde la propia app, sin escribir a nadie.</span></li>
+        <li><strong>No toca tu dinero</strong>
+          <span>La app apunta y hace las cuentas. Los pagos, por Bizum, en efectivo o como queráis.</span></li>
+        <li><strong>Al céntimo, de verdad</strong>
+          <span>Los importes se guardan en céntimos enteros, y el que sobra al repartir nunca se pierde.</span></li>
+      </ul>
+    </section>
+
+    <!--
+      Donaciones: van aquí y NO en la app. Apple rechaza las donaciones al
+      desarrollador fuera de su compra integrada (guía 3.1.1), y por eso el
+      enlace de la app, «La web de CoLiving», no dice nada de donar.
+
+      El enlace es la página de Ko-fi de CoLiving. Si cambia el nombre de la
+      página en Ko-fi, cambia aquí.
+
+      Lo que cuesta mantener la app NO se enseña: lo decidió Adrian el 12 de
+      octubre. No volver a poner la lista de costes.
+    -->
+    <section class="marco seccion" id="apoyar" aria-labelledby="apoyar-titulo">
+      <div class="apoyar">
+        <h2 id="apoyar-titulo">Apoya CoLiving</h2>
+        <div>
+          <p>CoLiving es gratis y no tiene anuncios. La hago yo, Adrian, en mis ratos libres, y
+            quiero que siga así.</p>
+          <p>Si os ha ahorrado alguna discusión en el piso, puedes invitarme a un café. Ayuda a
+            mantenerla publicada y a llevarla a Android.</p>
+          <div class="donar">
+            <a class="boton" href="https://ko-fi.com/coliving" rel="noopener">Hacer una donación</a>
+            <p class="boton-nota">El pago se hace en Ko-fi. Pones lo que quieras y no hace falta
+              crear una cuenta.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Esta sección hace también de URL de soporte en App Store Connect: no quitarla. -->
+    <section class="marco ayuda-portada" id="ayuda" aria-labelledby="ayuda-titulo">
+      <h2 id="ayuda-titulo">Ayuda</h2>
+      <p>¿Algo no funciona o tienes una duda? Escribe a
+        <a href="mailto:soporte@appcoliving.com">soporte@appcoliving.com</a>.</p>
+    </section>
+  </main>
+
+  <footer class="marco pie pie-portada">
+    <a href="privacidad.html">Privacidad</a>
+    <a href="condiciones.html">Condiciones de uso</a>
+    <span class="pie-firma">© 2026 Adrian Ghitan</span>
+  </footer>
+
+  <script>
+    /*
+     * El repartidor. La misma regla que `splitCents` de la app con pesos
+     * iguales: todo en céntimos enteros, nunca floats. Cada uno pone la parte
+     * entera, y los céntimos que sobran van de uno en uno a los primeros de la
+     * lista, que es como desempata la app (a igual resto, el primero).
+     */
+    (function () {
+      var MAX_CENTIMOS = 100000000; // el tope de la app: 1.000.000 € por gasto
+      var input = document.getElementById('importe');
+      var gente = Array.prototype.slice.call(document.querySelectorAll('.persona'));
+      var lista = document.getElementById('partes');
+      var explicacion = document.getElementById('explicacion');
+      var euros = new Intl.NumberFormat('es-ES', {
+        style: 'currency', currency: 'EUR', minimumFractionDigits: 2
+      });
+
+      // La misma lectura que `parseAmountToCents`: «12,50» o «12.5» → 1250.
+      function aCentimos(texto) {
+        var limpio = texto.trim().replace(/\s/g, '').replace(',', '.');
+        if (!limpio || !/^\d*\.?\d*$/.test(limpio)) return null;
+        var valor = Number(limpio);
+        if (!isFinite(valor) || valor <= 0) return null;
+        var centimos = Math.round(valor * 100);
+        return centimos <= MAX_CENTIMOS ? centimos : null;
+      }
+
+      function unir(nombres) {
+        if (nombres.length === 1) return nombres[0];
+        return nombres.slice(0, -1).join(', ') + ' y ' + nombres[nombres.length - 1];
+      }
+
+      function fila(nombre, avatar, centimos, extra) {
+        var li = document.createElement('li');
+        li.className = 'parte';
+        var av = avatar.cloneNode(true);
+        var n = document.createElement('span');
+        n.className = 'parte-nombre';
+        n.textContent = nombre;
+        li.appendChild(av);
+        li.appendChild(n);
+        if (extra) {
+          var c = document.createElement('span');
+          c.className = 'centimo';
+          c.textContent = '+1 céntimo';
+          li.appendChild(c);
+        }
+        var i = document.createElement('span');
+        i.className = 'parte-importe';
+        i.textContent = centimos === null ? '–' : euros.format(centimos / 100);
+        li.appendChild(i);
+        return li;
+      }
+
+      function pintar() {
+        var dentro = gente.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; });
+        var total = aCentimos(input.value);
+        var n = dentro.length;
+        var base = total === null ? null : Math.floor(total / n);
+        var sobran = total === null ? 0 : total - base * n;
+
+        lista.textContent = '';
+        lista.classList.toggle('partes--apagadas', total === null);
+        dentro.forEach(function (b, i) {
+          lista.appendChild(fila(
+            b.dataset.nombre,
+            b.querySelector('.avatar'),
+            base === null ? null : base + (i < sobran ? 1 : 0),
+            i < sobran
+          ));
+        });
+
+        if (total === null) {
+          var numero = Number(input.value.trim().replace(/\s/g, '').replace(',', '.'));
+          explicacion.textContent = numero * 100 > MAX_CENTIMOS
+            ? 'En la app, un gasto puede ser de hasta 1.000.000 €.'
+            : 'Escribe un importe, por ejemplo 47,83.';
+          return;
+        }
+        var suma = '<strong>' + euros.format(total / 100) + '</strong>';
+        if (n === 1) {
+          explicacion.innerHTML = 'Si lo paga una sola persona, no hay nada que repartir.';
+        } else if (sobran === 0) {
+          explicacion.innerHTML = 'Sale exacto: ' + euros.format(base / 100) + ' cada uno.';
+        } else {
+          var quien = unir(dentro.slice(0, sobran).map(function (b) { return b.dataset.nombre; }));
+          explicacion.innerHTML = (sobran === 1
+            ? 'No sale exacto: sobra 1 céntimo y se lo lleva ' + quien + '.'
+            : 'No sale exacto: sobran ' + sobran + ' céntimos y se los llevan ' + quien + ', uno cada uno.') +
+            ' Entre todos suman justo ' + suma + ', ni un céntimo más ni uno menos.';
+        }
+      }
+
+      gente.forEach(function (b) {
+        b.addEventListener('click', function () {
+          var dentro = gente.filter(function (g) { return g.getAttribute('aria-pressed') === 'true'; });
+          // Siempre queda al menos una persona: un gasto entre nadie no existe.
+          if (b.getAttribute('aria-pressed') === 'true' && dentro.length === 1) return;
+          b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+          pintar();
+        });
+      });
+      // Safari y Firefox aún no tienen `field-sizing`: el ancho, a mano.
+      var medir = window.CSS && CSS.supports('field-sizing', 'content')
+        ? function () {}
+        : function () { input.size = Math.max(input.value.length, 1); };
+      input.addEventListener('input', function () { medir(); pintar(); });
+      medir();
+      pintar();
+    })();
+  </script>
+</body>
+</html>

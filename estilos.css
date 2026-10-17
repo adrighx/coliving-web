@@ -1,0 +1,995 @@
+/*
+ * La web de CoLiving: inicio, privacidad y condiciones.
+ *
+ * Misma dirección que la app —Cal y ámbar—, con sus tres reglas: una sola cifra
+ * manda, el ámbar es lo único con color y claro y oscuro son la misma página.
+ * Los valores salen de `src/theme/index.ts`; si cambian allí, se cambian aquí.
+ *
+ * Lo único que se permite llamar la atención es el repartidor de arriba. Todo
+ * lo demás va callado: si algún día apetece animar otra sección o darle otro
+ * color, es justo lo que hay que no hacer.
+ *
+ * Space Grotesk se sirve desde aquí y no desde Google Fonts: pedirla a Google
+ * le pasaría la IP de cada visitante, y en una web que enlaza a una política de
+ * privacidad eso queda especialmente mal. Licencia OFL en `fuentes/OFL.txt`.
+ * Es la misma cara de display de la app desde el 17 de septiembre (antes,
+ * Bricolage): títulos e importes, nada más. El cuerpo va en la fuente del
+ * sistema, igual que en la app.
+ */
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('fuentes/SpaceGrotesk_500Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('fuentes/SpaceGrotesk_700Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  /* Modo claro: cal encalada y ámbar. */
+  --cal: #f2eee7;
+  --pieza: #fffdf9;
+  --pieza-alt: #f6f2e9;
+  --linea: #ede6d8;
+  /* El fondo de las escenas de la portada, y las piezas de la app encima. */
+  --escena: #e8e1d4;
+  --escena-pieza: #fffdf9;
+  --tinta: #1c1a17;
+  --tinta-suave: #6f6a60;
+  /* Para TEXTO en ámbar. El vivo (`--ambar`) sobre papel da 1,9 y no se lee. */
+  --ambar-texto: #7a5c05;
+  /* Para RELLENOS. Encima, siempre `--sobre-ambar` (tinta), nunca blanco. */
+  --ambar: #e5a612;
+  --sobre-ambar: #1c1a17;
+  --ambar-suave: #f7e9c4;
+  /* Solo dentro de los trozos de la app: dicen de qué lado está el dinero. */
+  --verde: #2f6b4f;
+  --almagre: #a8402c;
+  --cobalto: #2f4ba8;
+  --cobalto-suave: #e1e5f6;
+  --av-1: #3b5068;
+  --av-2: #3f6b54;
+  --av-3: #8a4a38;
+  --av-4: #5a4a73;
+  --av-5: #6b6250;
+  --sobre-avatar: #fffdf9;
+
+  --junta: 3px;
+  --radio: 20px;
+  --radio-fila: 12px;
+  --display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* La misma página de noche: carbón y el mismo ámbar. */
+    --cal: #0e0e11;
+    --pieza: #17171c;
+    --pieza-alt: #23232b;
+    --linea: #2b2b34;
+    --escena: #17171c;
+    --escena-pieza: #23232b;
+    --tinta: #f2f0ec;
+    --tinta-suave: #8b8892;
+    /* De noche el ámbar vivo sí se lee como texto: aquí los dos son el mismo. */
+    --ambar-texto: #e9b949;
+    --ambar: #e9b949;
+    --sobre-ambar: #14140f;
+    --ambar-suave: #2a2416;
+    --verde: #5fbf8e;
+    --almagre: #f08a72;
+    --cobalto: #8fa6f5;
+    --cobalto-suave: #1b2140;
+    --av-1: #8fa6c4;
+    --av-2: #79c4a2;
+    --av-3: #d99478;
+    --av-4: #a99bc9;
+    --av-5: #bfb49a;
+    --sobre-avatar: #14140f;
+    color-scheme: dark;
+  }
+}
+
+/* --------------------------------------------------------------- Base */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--cal);
+  color: var(--tinta);
+  font: 17px/1.6 -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto,
+    'Helvetica Neue', sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+h1,
+h2,
+h3,
+.marca {
+  font-family: var(--display);
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--ambar-texto);
+  font-weight: 600;
+  /* El correo de soporte es largo: en un móvil estrecho tiene que poder partirse. */
+  overflow-wrap: anywhere;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ambar);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Lo que solo tiene que oír un lector de pantalla. */
+.oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------ Cabecera */
+.cabecera {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cabecera picture {
+  display: flex;
+}
+
+.cabecera img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.marca {
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--tinta);
+}
+
+/* ---------------------------------------------------------- La portada */
+.marco {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 700px) {
+  .marco {
+    padding: 0 32px;
+  }
+}
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.barra nav {
+  display: flex;
+  gap: 4px;
+}
+
+.barra nav a {
+  color: var(--tinta-suave);
+  text-decoration: none;
+  font-size: 15px;
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+.barra nav a:hover {
+  color: var(--tinta);
+  background: var(--pieza);
+}
+
+/* El enlace a «Cómo funciona» es el primero que sobra en un móvil. */
+@media (max-width: 520px) {
+  .barra .solo-ancho {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------- El héroe */
+.heroe {
+  display: grid;
+  gap: 40px;
+  padding-top: 32px;
+  padding-bottom: 96px;
+  align-items: center;
+}
+
+@media (min-width: 940px) {
+  .heroe {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 64px;
+    padding-top: 56px;
+    padding-bottom: 128px;
+  }
+}
+
+.heroe h1 {
+  font-size: clamp(40px, 6.2vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin: 0 0 28px;
+  max-width: 14ch;
+}
+
+.entradilla {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--tinta-suave);
+  margin: 0 0 36px;
+  max-width: 34em;
+}
+
+/* ------------------------------------------------------------- Tiendas */
+/*
+ * Los botones de descarga, en tinta como las insignias de las tiendas: se
+ * reconocen como «descargar» sin tener que leerlos. En oscuro la tinta es clara
+ * y el botón sale claro sobre carbón, que es justo lo que hacen las insignias.
+ */
+.tiendas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tienda {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  /*
+   * Dos en fila hasta en un móvil de 375. `flex-wrap` decide si caben por la
+   * base, antes de encoger nada: con 170 de base (350 en total) bajaba uno de
+   * línea en los 343 que hay. Con 150 caben, y crecen hasta 200.
+   */
+  flex: 1 1 150px;
+  max-width: 200px;
+  min-height: 56px;
+  padding: 8px 20px;
+  border-radius: 14px;
+  background: var(--tinta);
+  color: var(--cal);
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+a.tienda:hover {
+  opacity: 0.85;
+}
+
+.tienda-arriba {
+  font-size: 12px;
+}
+
+.tienda-nombre {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/*
+ * La insignia oficial de una tienda, tal cual: sin fondo, sin padding, sin
+ * redondear. Del mismo alto que los botones, para que la fila se vea pareja.
+ */
+.insignia {
+  display: inline-flex;
+  align-items: center;
+}
+
+.insignia img {
+  display: block;
+  height: 56px;
+  width: auto;
+}
+
+a.insignia:hover {
+  opacity: 0.85;
+}
+
+/* Aún no publicada: se ve, pero apagada, y no se puede pulsar. */
+.tienda--pronto {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------- Repartidor */
+/*
+ * Lo único que manda en la página. La cifra grande es el importe que escribe
+ * quien mira, y debajo, cómo se reparte: es la regla de la app («una sola cifra
+ * manda») hecha algo que se puede tocar.
+ */
+.repartidor {
+  background: var(--pieza);
+  border-radius: 28px;
+  padding: 24px;
+}
+
+@media (min-width: 700px) {
+  .repartidor {
+    padding: 32px;
+  }
+}
+
+.repartidor-titulo {
+  font-size: 15px;
+  color: var(--tinta-suave);
+  margin: 0 0 4px;
+}
+
+.importe {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  border-bottom: 2px solid var(--linea);
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+}
+
+.importe:focus-within {
+  border-bottom-color: var(--ambar);
+}
+
+/*
+ * El campo mide lo que el número, para que el «€» vaya pegado detrás y no en
+ * la otra punta. Donde no hay `field-sizing`, el script le pone `size`.
+ */
+.importe input {
+  flex: 0 1 auto;
+  field-sizing: content;
+  min-width: 1ch;
+  max-width: 100%;
+  border: 0;
+  background: none;
+  color: var(--tinta);
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(48px, 9vw, 64px);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  padding: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.importe input:focus {
+  outline: none;
+}
+
+.importe span {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 32px;
+  color: var(--tinta-suave);
+}
+
+.entre {
+  font-size: 15px;
+  color: var(--tinta-suave);
+  margin: 0 0 10px;
+}
+
+.gente {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.persona {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px 5px 5px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pieza-alt);
+  color: var(--tinta-suave);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.persona[aria-pressed='true'] {
+  background: var(--ambar-suave);
+  color: var(--ambar-texto);
+  font-weight: 600;
+}
+
+.persona[aria-pressed='false'] .avatar {
+  opacity: 0.35;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--sobre-avatar);
+  font-size: 13px;
+  font-weight: 700;
+  flex: none;
+}
+
+.av-1 { background: var(--av-1); }
+.av-2 { background: var(--av-2); }
+.av-3 { background: var(--av-3); }
+.av-4 { background: var(--av-4); }
+.av-5 { background: var(--av-5); }
+
+.partes {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: var(--junta);
+}
+
+.parte {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--pieza-alt);
+  border-radius: var(--radio-fila);
+  padding: 10px 14px 10px 10px;
+}
+
+.parte-nombre {
+  flex: 1;
+  min-width: 0;
+}
+
+.parte-importe {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.centimo {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ambar-texto);
+  background: var(--ambar-suave);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.partes--apagadas .parte {
+  opacity: 0.4;
+}
+
+.explicacion {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--tinta-suave);
+  margin: 0;
+  min-height: 3em;
+}
+
+.explicacion strong {
+  color: var(--tinta);
+}
+
+/* ------------------------------------------------------------ Secciones */
+.seccion {
+  padding-top: 32px;
+  padding-bottom: 96px;
+}
+
+.seccion h2 {
+  font-size: clamp(32px, 4.6vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0 0 16px;
+  max-width: 16ch;
+}
+
+.seccion-intro {
+  font-size: 19px;
+  color: var(--tinta-suave);
+  margin: 0 0 40px;
+  max-width: 34em;
+}
+
+/* ------------------------------------------------ Los rasgos: trozos de la app */
+/*
+ * Cuatro rasgos de dos en dos. Cada uno, una escena del mismo alto con un trozo
+ * de pantalla de la app dentro, y el texto debajo, suelto sobre la página.
+ *
+ * Antes era una pared de fichas de tamaños distintos, con la pantalla dentro de
+ * la ficha y las filas dentro de la pantalla: tres cajas una dentro de otra, y
+ * alturas que no casaban. Ahora solo hay dos niveles —la escena y las piezas de
+ * la app— y las escenas miden lo mismo, así que las cuatro se leen a la vez.
+ */
+.rasgos {
+  display: grid;
+  gap: 56px;
+}
+
+@media (min-width: 860px) {
+  .rasgos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 72px 32px;
+  }
+}
+
+.rasgo h3 {
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 24px 0 8px;
+}
+
+.rasgo p {
+  margin: 0;
+  color: var(--tinta-suave);
+  max-width: 32em;
+}
+
+/* Un grado más hondo que la página, para que las piezas blancas de la app destaquen. */
+.escena {
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  padding: 32px 20px;
+  border-radius: 28px;
+  background: var(--escena);
+}
+
+.escena-app {
+  width: 100%;
+  max-width: 380px;
+  display: grid;
+  gap: var(--junta);
+  font-size: 15px;
+}
+
+.mini {
+  background: var(--escena-pieza);
+  border-radius: var(--radio-fila);
+  padding: 12px 14px;
+}
+
+.fila-importe {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 18px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.pieza {
+  background: var(--pieza);
+  border-radius: var(--radio);
+  padding: 24px;
+}
+
+/* El rótulo de la app: 11 px en versalitas. Solo dentro de las pantallas. */
+.rotulo {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+  margin-bottom: 2px;
+}
+
+.cifra {
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 40px;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.verde {
+  color: var(--verde);
+}
+
+.detalle {
+  color: var(--tinta-suave);
+  font-size: 14px;
+}
+
+/* La tira de la semana del Cuadrante. */
+.semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 2px;
+}
+
+.dia {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 6px 0 8px;
+  border-radius: 10px;
+}
+
+.dia small {
+  font-size: 11px;
+  color: var(--tinta-suave);
+}
+
+.dia b {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 17px;
+}
+
+/* El punto ocupa sitio siempre, como en la app: así los números no bailan. */
+.dia i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dia--hoy {
+  background: var(--ambar-suave);
+}
+
+.dia--hoy b {
+  color: var(--ambar-texto);
+  font-weight: 700;
+}
+
+.punto-hecho { background: var(--verde); }
+.punto-pasado { background: var(--almagre); }
+.punto-toca { background: var(--ambar); }
+
+.fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fila-texto {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.fila-texto small {
+  display: block;
+  color: var(--tinta-suave);
+  font-size: 13px;
+}
+
+.circulo {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--ambar-texto);
+  flex: none;
+}
+
+.pastilla-espera {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cobalto);
+  background: var(--cobalto-suave);
+  border-radius: 999px;
+  padding: 2px 10px;
+  margin-top: 4px;
+}
+
+.mini-boton {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: var(--ambar);
+  color: var(--sobre-ambar);
+  white-space: nowrap;
+}
+
+.mini-boton--suave {
+  background: var(--ambar-suave);
+  color: var(--ambar-texto);
+}
+
+/* ------------------------------------------------------------ Los pasos */
+/* Aquí sí van números: es una secuencia de verdad, y se hace en ese orden. */
+.pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 32px;
+  counter-reset: paso;
+}
+
+@media (min-width: 760px) {
+  .pasos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
+  }
+}
+
+/* El número, encima de la barra; el texto, debajo. */
+.pasos li {
+  counter-increment: paso;
+}
+
+.pasos li::before {
+  content: counter(paso);
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--ambar-texto);
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--tinta);
+  margin-bottom: 16px;
+}
+
+.pasos h3 {
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.pasos p {
+  margin: 0;
+  color: var(--tinta-suave);
+}
+
+/* -------------------------------------------------------- Sin letra pequeña */
+.promesas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0 40px;
+}
+
+@media (min-width: 760px) {
+  .promesas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.promesas li {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.promesas strong {
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.015em;
+}
+
+.promesas span {
+  color: var(--tinta-suave);
+}
+
+/* ------------------------------------------------------------- Apoyar */
+/*
+ * Sin la lista de costes (12 de octubre), el título va a la izquierda y el texto
+ * a la derecha: con todo en una columna, media ficha se quedaba vacía.
+ */
+.apoyar {
+  display: grid;
+  gap: 8px;
+  background: var(--pieza);
+  border-radius: 28px;
+  padding: 28px 24px;
+}
+
+@media (min-width: 860px) {
+  .apoyar {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 56px;
+    padding: 56px;
+    align-items: center;
+  }
+}
+
+.apoyar h2 {
+  font-size: clamp(32px, 4.6vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0 0 8px;
+}
+
+.apoyar p {
+  color: var(--tinta-suave);
+  margin: 0 0 16px;
+  max-width: 32em;
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  background: var(--ambar);
+  color: var(--sobre-ambar);
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.boton:hover {
+  filter: brightness(1.05);
+}
+
+/*
+ * El botón y su nota, juntos y separados del texto. Antes el botón tenía 28 px
+ * por encima y 12 por debajo, y se veía descolgado del texto y pegado a la nota.
+ */
+.donar {
+  margin-top: 28px;
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+
+.apoyar .boton-nota {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------- Ayuda */
+.ayuda-portada {
+  display: grid;
+  gap: 8px;
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
+
+.ayuda-portada h2 {
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.ayuda-portada p {
+  margin: 0;
+  color: var(--tinta-suave);
+  font-size: 19px;
+}
+
+/* ------------------------------------------------------- Las páginas legales */
+/*
+ * Privacidad y condiciones: una columna de lectura con las piezas apiladas.
+ * Usan las mismas piezas que la portada y una cabecera más sencilla.
+ */
+.pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 16px 64px;
+}
+
+@media (min-width: 700px) {
+  .pagina {
+    padding: 48px 20px 72px;
+  }
+}
+
+.pagina > .cabecera {
+  margin-bottom: 48px;
+}
+
+.pagina h1 {
+  font-size: clamp(34px, 6vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0 0 8px;
+}
+
+.documento h2 {
+  font-size: 21px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 0 0 8px;
+}
+
+.documento .pieza + .pieza {
+  margin-top: var(--junta);
+}
+
+.documento .pieza > :last-child {
+  margin-bottom: 0;
+}
+
+.documento ul {
+  padding-left: 20px;
+}
+
+.documento li + li {
+  margin-top: 4px;
+}
+
+.fecha {
+  color: var(--tinta-suave);
+  margin: 0 0 32px;
+}
+
+/* ----------------------------------------------------------------- Pie */
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  font-size: 14px;
+  color: var(--tinta-suave);
+  margin-top: 48px;
+}
+
+.pie a {
+  color: var(--tinta-suave);
+}
+
+.pie a:hover {
+  color: var(--tinta);
+}
+
+.pie-portada {
+  border-top: 1px solid var(--linea);
+  padding-top: 24px;
+  padding-bottom: 40px;
+  margin-top: 0;
+}
+
+.pie-firma {
+  margin-left: auto;
+}
